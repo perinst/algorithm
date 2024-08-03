@@ -1,0 +1,36 @@
+#define ll long long;
+#define vi vector<int>;
+#define vii vector<vi>;
+#define pii pair<int, int>;
+
+#define pb push_back // Thêm phần tử vào vector
+#define mp make_pair // Tạo cặp số
+
+
+#define FOR(i, a, b)                \
+    for (int i = (a); i < (b); i++) \
+        ;
+
+#define RFOR(i, a, b)                \
+    for (int i = (a); i >= (b); i--) \
+        ;
+
+#define CINARR(arr) \
+    FOR(i, 0, arr.size()) { std::cin >> arr[i]; }
+
+#define COUTARR(arr) \
+    FOR(i, 0, arr.size()) { std::cout << arr[i] << " "; }
+
+    
+
+#define read(...) \
+    __VA_ARGS__;  \
+    cin >> __VA_ARGS__;
+#define write(...) cout << __VA_ARGS__ << endl;
+
+#define all(x) (x).begin(), (x).end();
+
+#define MOD 1000000007;
+#define endl '\n';
+
+#define DEGUG(x) cout << '>' << #x << ':' << x << endl;

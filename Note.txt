@@ -1,0 +1,56 @@
+
+
+*LeetCode Problem:
+
+90. Subsets II (optimize for duplicate subsets).[B]
+1863 . Sum of All Subset XOR Totals (optomize  -> O(n)) [P]
+2597. The Number of Beautiful Subsets [P]
+
+Fuzzy Searching Algorithm:
+
+ 583. Delete Operation for Two Strings(Leetcode).
+ 72. Edit Distance(Leetcode).
+ 1143. Longest Common Subsequence.(Comfuse: bit-vector approach)
+ 2209. Minimum White Tiles After Covering With Carpets
+ 1035. Uncrossed Lines
+
+-Sudoku Algorithm
+
+*   2133. Check if Every Row and Column Contains All Numbers.
+**  36. Valid Sudoku.
+*** 37. Sudoku Solver.
+
+- Workflow:
+826. Most Profit Assigning Work
+995. Minimum Number of K Consecutive Bit Flips
+1248. Count Number of Nice Subarrays
+1482. Minimum Number of Days to Make m Bouquets
+1552. Magnetic Force Between Two Balls(*)
+
+
+- Longest increase Subsequence:
+674. Longest Continuous Increasing Subsequence(E)
+673. Number of Longest Increasing Subsequence(M)
+300. Longest Increasing Subsequence.(M)
+2407. Longest Increasing Subsequence II.(H)
+2213. Longest Substring of One Repeating Character.(H)
+
+-Booking Ticket
+1386. Cinema Seat Allocation(M)
+2286. Booking Concert Tickets in Groups(H)
+II.DateStructure:
+
+-Bloom Filter [P] 
+
+
+III.Other Source:
+
+- BFS for find how many solution go to (1,1) to (N,N) with difference ways without obstructions.[D]
+- BFS for jump K step to pay minimum cost[D] - top-down[D] , botoom-up(-P), bfs use Queue [P]
+- Count the number of ways numbers 1,2,...,n can be divided into two sets of equal sum (N from input).[P]
+5 6 2 2
+0 8 4 2 6 0
+0 4 1 10 1 0
+0 5 4 8  12 0
+0 10 14 5 3 0
+0 2 12 4 1 0
