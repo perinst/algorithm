@@ -34,3 +34,56 @@
 #define endl '\n';
 
 #define DEGUG(x) cout << '>' << #x << ':' << x << endl;
+
+
+// fast input output 
+
+    static const auto speedup = []() {
+        std::ios::sync_with_stdio(false);
+        std::cin.tie(nullptr);
+        std::cout.tie(nullptr);
+        return 0;
+    }();
+
+//
+// Template overload for operator<< to print any type of std::vector
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const std::vector<T> &vec)
+{
+    os << "[";
+    for (size_t i = 0; i < vec.size(); ++i)
+    {
+        os << vec[i];
+        if (i != vec.size() - 1)
+        {
+            os << ", ";
+        }
+    }
+    os << "]";
+    return os;
+}
+// Overload the << operator for vector<int>
+std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
+    os << "[";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        os << vec[i];
+        if (i != vec.size() - 1) {
+            os << ", ";
+        }
+    }
+    os << "]";
+    return os;
+}
+
+// Overload the << operator for vector<vector<int>>
+std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int>>& vec) {
+    os << "[\n";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        os << "  " << vec[i];
+        if (i != vec.size() - 1) {
+            os << ",\n";
+        }
+    }
+    os << "\n]";
+    return os;
+}

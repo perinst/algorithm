@@ -115,7 +115,7 @@ int main
     RudolfBuildKBridges s;
 
     s.cinInput();
-    s.sovle();
+    s.solve();
 
     return 0;
 }
