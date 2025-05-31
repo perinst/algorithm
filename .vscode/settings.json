@@ -92,7 +92,7 @@
     "thread": "cpp",
     "typeindex": "cpp"
   },
-  "cSpell.words": [
-    "Fenwick"
-  ]
+  "cSpell.words": ["Fenwick", "Gini"],
+  "C_Cpp.errorSquiggles": "disabled",
+  "editor.inlineSuggest.enabled": false
 }

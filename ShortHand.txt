@@ -38,12 +38,12 @@
 
 // fast input output 
 
-    static const auto speedup = []() {
-        std::ios::sync_with_stdio(false);
-        std::cin.tie(nullptr);
-        std::cout.tie(nullptr);
-        return 0;
-    }();
+        static const auto speedup = []() {
+            std::ios::sync_with_stdio(false);
+            std::cin.tie(nullptr);
+            std::cout.tie(nullptr);
+            return 0;
+        }();
 
 //
 // Template overload for operator<< to print any type of std::vector
@@ -86,4 +86,26 @@ std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int>>& 
     }
     os << "\n]";
     return os;
+}
+
+
+
+void runTestCases(const string& filePath) {
+    ifstream inputFile(filePath); // Open the file
+    if (!inputFile) {
+        cerr << "Error: File not found or could not be opened." << endl;
+        return;
+    }
+
+    int T; // Number of test cases
+    inputFile >> T;
+
+    for (int i = 1; i <= T; ++i) {
+        int a, b;
+        inputFile >> a >> b; // Read the two integers
+        int totalProblems = a + b;
+        cout << "Case " << i << ": " << totalProblems << endl;
+    }
+
+    inputFile.close(); // Close the file
 }

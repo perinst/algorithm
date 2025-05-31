@@ -36,6 +36,6 @@ bool isHappy(int n)
 
 int main()
 {
-
+    cout << isHappy(19);
     return 0;
 }

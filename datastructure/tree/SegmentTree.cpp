@@ -47,13 +47,61 @@ public:
         newNode->leftNode = build(left, mid);
         newNode->rightNode = build(mid + 1, right);
 
-        // Compare the minimum values at the indices stored in left and right nodes
         if (nums[newNode->leftNode->minRangeIdx] < nums[newNode->rightNode->minRangeIdx])
             newNode->minRangeIdx = newNode->leftNode->minRangeIdx;
         else
             newNode->minRangeIdx = newNode->rightNode->minRangeIdx;
 
         return newNode;
+    }
+
+    Node *insertLast(int val)
+    {
+        this->nums.push_back(val);
+        Node *node = this->root;
+
+        while (node->rightNode != nullptr)
+        {
+            int idx = node->minRangeIdx;
+            if (num[idx] < val)
+            {
+                node->minRangeIdx = this->nums.size() - 1;
+            }
+
+            node = node->rightNode;
+            node->rightRange = this->nums.size() - 1;
+        }
+    }
+
+    void updateSingle(int val, int index)
+    {
+        this->nums[index] = val;
+        int updateFromIdx = (this->nums.size() - 1) / 2;
+
+        updateSingle(this->root, value, 0, this.nums.size() - 1, index);
+    }
+
+    Node *updateSingle(Node *node, int &value, int left, int right, int &index)
+    {
+        if (left == right && left == index)
+        {
+            return node;
+        }
+
+        int mid = (right + left) / 2;
+
+        if (index <= mid)
+        {
+            Node *leftNode = updateSingle(node->leftNode, value, left, mid, index);
+        }
+        else
+        {
+            Node *rightNode = updateSingle(node->rightNode, value, mid + 1, right, index);
+        }
+    }
+
+    Node *plusRange(int valuePlus, int fromIdx, int toIdx)
+    {
     }
 
     int queryMin(int left, int right)
@@ -63,27 +111,23 @@ public:
 
     int queryMin(Node *node, int left, int right)
     {
-        if (!node || left > node->rightRange || right < node->leftRange)
+        if (!node || left > node->rightNode->rightRange || right < node->leftNode->leftRange)
         {
             return -1;
         }
 
         if (left <= node->leftRange && node->rightRange <= right)
-        {
-            return node->minRange;
-        }
+            return node->minRangeIdx;
 
-        int leftMin = queryMin(node->leftNode, left, right);
-        int rightMin = queryMin(node->rightNode, left, right);
+        int minLeftIdx = queryMin(node->leftNode, left, right);
+        int minRightIdx = queryMin(node->rightNode, left, right);
 
-        // Handle cases where one side is out of range
-        if (leftMin == -1)
-            return rightMin;
-        if (rightMin == -1)
-            return leftMin;
+        if (minLeftIdx == -1)
+            return minRightIdx;
+        if (minRightIdx == -1)
+            return minLeftIdx;
 
-        // Return the index with the minimum value
-        return nums[leftMin] < nums[rightMin] ? leftMin : rightMin;
+        return nums[minLeftIdx] < nums[minRightIdx] ? minLeftIdx : minRightIdx;
     }
 };
 
