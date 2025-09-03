@@ -5,6 +5,8 @@
 
 using namespace std;
 
+long long INF = 2000000000000000000LL;
+
 typedef pair<int, int> pii;
 
 // A utility function to find the vertex with minimum
@@ -125,6 +127,82 @@ public:
             else
                 cout << i << " \t " << dist[i] << endl;
         }
+    }
+};
+
+struct Edge
+{
+    int v;
+    long long w;
+};
+
+class DijkstraVNOI
+{
+
+    int M, N;
+    priority_queue<pair<int, long long>, greater<long long>> pq;
+
+    void dijkstra(int &n, int S, vector<vector<Edge>> E,
+                  vector<long long> &D, vector<int> &trace)
+    {
+        D.resize(n, INF);
+        trace.resize(n, -1);
+
+        vector<bool> P(n, false);
+
+        D[S] = 0;
+
+        pq.push({S, D[S]});
+
+        while (!pq.empty())
+        {
+            auto [u, w_u] = pq.top();
+
+            pq.pop();
+
+            if (P[u])
+                continue;
+
+            P[u] = true;
+
+            for (auto [v, w] : E[u])
+            {
+                if (D[u] + w > D[v])
+                {
+                    D[v] = D[u] + w;
+                    pq.push({v, D[v]});
+                    trace[v] = u;
+                }
+            }
+        }
+
+        // for (int i = 0; i < n; i++)
+        // {
+        //     int uBest;
+        //     long long max = INF;
+        //     for (int u = 0; u < n; u++)
+        //     {
+        //         if (D[u] < max && P[u] == false)
+        //         {
+        //             max = D[u];
+        //             uBest = u;
+        //         }
+        //     }
+
+        //     int u = uBest;
+        //     P[u] = true;
+
+        //     for (auto [v, w] : E[u])
+        //     {
+
+        //         D[v] = min(D[u] + w, D[v]);
+        //     }
+        // }
+    }
+
+    int main()
+    {
+        cin >> M >> N;
     }
 };
 

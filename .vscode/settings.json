@@ -90,9 +90,10 @@
     "stop_token": "cpp",
     "syncstream": "cpp",
     "thread": "cpp",
-    "typeindex": "cpp"
+    "typeindex": "cpp",
+    "queue": "cpp"
   },
-  "cSpell.words": ["Fenwick", "Gini"],
+  "cSpell.words": ["Fenwick", "Gini", "SPFA", "topo", "VNOI", "Xors"],
   "C_Cpp.errorSquiggles": "disabled",
   "editor.inlineSuggest.enabled": false
 }

@@ -113,50 +113,61 @@ void print_params(T &&t, Args &&...args)
     print_params(args...);
 }
 
-map<int, int> memo;
+// map<int, int> memo;
 
 // Example usage:
-int fib(int n)
-{
-    REC_ENTER("fib", n);
+// int fib(int n)
+// {
+//     REC_ENTER("fib", n);
 
-    if (memo.count(n))
-    {
-        MEMO_HIT(n, memo[n]);
-        REC_EXIT("fib", memo[n]);
-        return memo[n];
-    }
+//     if (memo.count(n))
+//     {
+//         MEMO_HIT(n, memo[n]);
+//         REC_EXIT("fib", memo[n]);
+//         return memo[n];
+//     }
 
-    if (n <= 1)
-    {
-        memo[n] = n;
-        MEMO_STORE(n, n);
-        REC_EXIT("fib", n);
-        return n;
-    }
+//     if (n <= 1)
+//     {
+//         memo[n] = n;
+//         MEMO_STORE(n, n);
+//         REC_EXIT("fib", n);
+//         return n;
+//     }
 
-    int result = fib(n - 1) + fib(n - 2);
-    memo[n] = result;
-    MEMO_STORE(n, result);
-    REC_EXIT("fib", result);
-    return result;
-}
+//     int result = fib(n - 1) + fib(n - 2);
+//     memo[n] = result;
+//     MEMO_STORE(n, result);
+//     REC_EXIT("fib", result);
+//     return result;
+// }
 
-// Main solution function
+#define fast_io                       \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL);                    \
+    cout.tie(NULL)
+
+using namespace std;
+
 void solve()
 {
-
-    // cout << "Result: " << fib(5) << endl;
+    int N;
+    cin >> N;
+    vector<int> nums(N);
+    for (int i = 0; i < N; i++)
+    {
+        cin >> nums[i];
+    }
 }
 
 int main()
 {
     fast_io;
 
-    int t = 1;
-    // cin >> t; // Uncomment for multiple test cases
+    int T = 1;
+    // cin >> T;
 
-    while (t--)
+    while (T--)
     {
         solve();
     }

@@ -41,6 +41,7 @@ int maxTargetNode(int node, int depth, unordered_map<int, vector<int>> &map)
     vector<int> nexts = map[node];
 
     int maxTarget = 1;
+
     for (int &nextNode : nexts)
     {
         maxTarget = nexts.size() + maxTargetNode(nextNode, depth - 1, map);
@@ -51,6 +52,10 @@ int maxTargetNode(int node, int depth, unordered_map<int, vector<int>> &map)
 
 vector<int> maxNodeTargetEdge(vector<vector<int>> &edges, int k)
 {
+    int n = edges.size() + 1;
+
+    if (k < 0)
+        return vector<int>(n, 0);
 
     unordered_map<int, vector<int>> map;
 
@@ -62,56 +67,45 @@ vector<int> maxNodeTargetEdge(vector<vector<int>> &edges, int k)
         map[next].push_back(node);
     }
 
-    int n = map.size();
-
-    vector<int> listMaxTargetNodes;
+    vector<int> listMaxTargetNodes(n, 0);
 
     for (int i = 0; i < n; i++)
     {
         vector<bool> visited(n, false);
 
-        queue<tuple<int, vector<int>, int>> q;
+        queue<pair<int, int>> q;
 
+        q.push({k, i});
         visited[i] = true;
-
-        q.push({k, map[i], 1});
 
         int maxTargetNode = 1;
 
         while (!q.empty())
         {
-            auto [depth, nodes, currentTargetNodes] = q.front();
+            auto [depth, node] = q.front();
             q.pop();
 
             if (depth == 0)
             {
-                maxTargetNode = max(maxTargetNode, currentTargetNodes);
                 continue;
             }
 
-            int nextSizeNode = 0;
+            int target = 0;
 
-            for (int &next : nodes)
+            for (int &next : map[node])
             {
+                if (visited[next])
+                    continue;
 
-                if (!visited[next])
-                {
-                    nextSizeNode++;
-                }
+                target++;
+                q.push({depth - 1, next});
+                visited[next] = true;
             }
 
-            for (int &next : nodes)
-            {
+            maxTargetNode += target;
+        }
 
-                if (!visited[next])
-                {
-                    visited[next] = true;
-                    q.push({depth - 1, map[next], currentTargetNodes + nextSizeNode});
-                }
-            }
-                }
-
-        listMaxTargetNodes.push_back(maxTargetNode);
+        listMaxTargetNodes[i] = maxTargetNode;
     }
 
     return listMaxTargetNodes;
@@ -126,25 +120,11 @@ vector<int> maxTargetNodes1(vector<vector<int>> &edges1,
     unordered_map<int, int> freq_tre_1;
 
     vector<int> listMaxTargetNodeEdge1 = maxNodeTargetEdge(edges1, k);
-    vector<int> listMaxTargetNodeEdge2;
-
-    if (k > 0)
-    {
-        listMaxTargetNodeEdge2 = maxNodeTargetEdge(edges2, k - 1);
-    }
+    vector<int> listMaxTargetNodeEdge2 = maxNodeTargetEdge(edges2, k - 1);
 
     vector<int> ans(listMaxTargetNodeEdge1.size());
 
-    int maxTargetNodes = 0;
-
-    if (k > 0)
-    {
-
-        for (int &targetNodes : listMaxTargetNodeEdge2)
-        {
-            maxTargetNodes = max(targetNodes, maxTargetNodes);
-        }
-    }
+    int maxTargetNodes = *max_element(listMaxTargetNodeEdge2.begin(), listMaxTargetNodeEdge2.end());
 
     for (int i = 0; i < listMaxTargetNodeEdge1.size(); i++)
     {
@@ -215,11 +195,229 @@ vector<int> maxTargetNodes(vector<vector<int>> &edges1,
     return ans;
 }
 
+class OptimizedSolution
+{
+private:
+    // Single DFS with DP - O(n*k) instead of O(n²*k)
+    vector<int> countNodesWithinK(vector<vector<int>> &edges, int k)
+    {
+        if (k < 0)
+            return vector<int>(edges.size() + 1, 0);
+
+        int n = edges.size() + 1;
+        vector<vector<int>> adj(n);
+
+        // Build adjacency list - O(n)
+        for (auto &edge : edges)
+        {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+
+        vector<int> result(n);
+
+        // DP: dp[d] = count of nodes at exactly distance d from current node
+        function<vector<int>(int, int)> dfs = [&](int node, int parent) -> vector<int>
+        {
+            vector<int> dp(k + 1, 0);
+            dp[0] = 1; // The node itself
+
+            for (int child : adj[node])
+            {
+                if (child == parent)
+                    continue;
+
+                vector<int> child_dp = dfs(child, node);
+
+                // Merge child results - add nodes at distance d+1
+                for (int d = 0; d < k; d++)
+                {
+                    dp[d + 1] += child_dp[d];
+                }
+            }
+
+            // Sum all distances <= k for this node
+            result[node] = 0;
+            for (int d = 0; d <= k; d++)
+            {
+                result[node] += dp[d];
+            }
+
+            return dp;
+        };
+
+        dfs(0, -1);
+        return result;
+    }
+
+    // Re-rooting optimization for ultimate performance
+    vector<int> rerootOptimization(vector<vector<int>> &edges, int k)
+    {
+        if (k < 0)
+            return vector<int>(edges.size() + 1, 0);
+
+        int n = edges.size() + 1;
+        vector<vector<int>> adj(n);
+
+        for (auto &edge : edges)
+        {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+
+        // down[node][d] = count of nodes at distance d in subtree of node
+        // up[node][d] = count of nodes at distance d outside subtree of node
+        vector<vector<int>> down(n, vector<int>(k + 1, 0));
+        vector<vector<int>> up(n, vector<int>(k + 1, 0));
+        vector<int> result(n);
+
+        // Phase 1: Compute downward DP (rooted at 0)
+        function<void(int, int)> dfs1 = [&](int node, int parent)
+        {
+            down[node][0] = 1;
+
+            for (int child : adj[node])
+            {
+                if (child == parent)
+                    continue;
+
+                dfs1(child, node);
+
+                // Merge child's contribution
+                for (int d = 0; d < k; d++)
+                {
+                    down[node][d + 1] += down[child][d];
+                }
+            }
+        };
+
+        // Phase 2: Compute upward DP and final answers
+        function<void(int, int)> dfs2 = [&](int node, int parent)
+        {
+            // Calculate result for current node
+            result[node] = 0;
+            for (int d = 0; d <= k; d++)
+            {
+                result[node] += down[node][d] + up[node][d];
+            }
+
+            // Prepare upward DP for children
+            vector<vector<int>> prefix(adj[node].size(), vector<int>(k + 1, 0));
+            vector<vector<int>> suffix(adj[node].size(), vector<int>(k + 1, 0));
+
+            int child_idx = 0;
+            for (int child : adj[node])
+            {
+                if (child == parent)
+                {
+                    child_idx++;
+                    continue;
+                }
+
+                // Copy downward contribution of this child
+                for (int d = 0; d < k; d++)
+                {
+                    if (child_idx > 0)
+                    {
+                        prefix[child_idx][d + 1] = prefix[child_idx - 1][d + 1];
+                    }
+                    prefix[child_idx][d + 1] += down[child][d];
+                }
+                child_idx++;
+            }
+
+            // Build suffix arrays
+            for (int i = adj[node].size() - 2; i >= 0; i--)
+            {
+                for (int d = 0; d <= k; d++)
+                {
+                    suffix[i][d] = suffix[i + 1][d] + prefix[i + 1][d];
+                }
+            }
+
+            // Propagate to children
+            child_idx = 0;
+            for (int child : adj[node])
+            {
+                if (child == parent)
+                {
+                    child_idx++;
+                    continue;
+                }
+
+                // Calculate upward contribution for this child
+                for (int d = 0; d < k; d++)
+                {
+                    up[child][d + 1] = up[node][d] +
+                                       (child_idx > 0 ? prefix[child_idx - 1][d + 1] : 0) +
+                                       suffix[child_idx][d + 1];
+                }
+                up[child][0] = 1; // The parent node itself
+
+                dfs2(child, node);
+                child_idx++;
+            }
+        };
+
+        dfs1(0, -1);
+        dfs2(0, -1);
+
+        return result;
+    }
+
+public:
+    vector<int> maxTargetNodes(vector<vector<int>> &edges1,
+                               vector<vector<int>> &edges2, int k)
+    {
+        // Use the optimized single-pass algorithm
+        vector<int> tree1_counts = countNodesWithinK(edges1, k);
+        vector<int> tree2_counts = countNodesWithinK(edges2, k - 1);
+
+        // Find maximum in tree2
+        int max_tree2 = 0;
+        if (!tree2_counts.empty())
+        {
+            max_tree2 = *max_element(tree2_counts.begin(), tree2_counts.end());
+        }
+
+        // Combine results
+        vector<int> result(tree1_counts.size());
+        for (int i = 0; i < tree1_counts.size(); i++)
+        {
+            result[i] = tree1_counts[i] + max_tree2;
+        }
+
+        return result;
+    }
+
+    // For maximum performance, use re-rooting
+    vector<int> maxTargetNodesUltraFast(vector<vector<int>> &edges1,
+                                        vector<vector<int>> &edges2, int k)
+    {
+        vector<int> tree1_counts = rerootOptimization(edges1, k);
+        vector<int> tree2_counts = rerootOptimization(edges2, k - 1);
+
+        int max_tree2 = 0;
+        if (!tree2_counts.empty())
+        {
+            max_tree2 = *max_element(tree2_counts.begin(), tree2_counts.end());
+        }
+
+        vector<int> result(tree1_counts.size());
+        for (int i = 0; i < tree1_counts.size(); i++)
+        {
+            result[i] = tree1_counts[i] + max_tree2;
+        }
+
+        return result;
+    }
+};
+
 void solve()
 {
-    vector<vector<int>> edges1 = {{0, 1}};
-    vector<vector<int>> edges2 = {{0, 1}};
-    int k = 0;
+    vector<vector<int>> edges1 = {{0, 1}, {0, 2}, {2, 3}, {2, 4}};
+    vector<vector<int>> edges2 = {{0, 1}, {0, 2}, {0, 3}, {2, 7}, {1, 4}, {4, 5}, {4, 6}};
+    int k = 2;
     cout << maxTargetNodes1(edges1, edges2, k);
 }
 

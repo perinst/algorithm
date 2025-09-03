@@ -1,0 +1,1 @@
+{"name":"Local: B","url":"e:\\Algorithm\\LG\\B.cpp","tests":[{"id":1749872178373,"input":"2\n3\nABC\nABD\nXY\n3\nABC\nXC\nDZ","output":"000\n001"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Algorithm\\LG\\B.cpp","group":"local","local":true}
