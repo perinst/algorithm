@@ -1,101 +1,94 @@
 #include <iostream>
 #include <vector>
-#include <climits>
-#include <cmath>
-#include <stack>
-#include <algorithm>
 #include <string>
+#include <algorithm>
+#include <queue>
+#include <stack>
+#include <cmath>
+#include <climits>
 
-#define ll long long;
-#define vi vector<int>;
-#define vii vector<vi>;
-#define pii pair<int, int>;
+using namespace std;
 
-#define pb push_back // Thêm phần tử vào vector
-#define mp make_pair // Tạo cặp số
+// Fast I/O
+#define fast_io                       \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL);                    \
+    cout.tie(NULL)
 
-#define FOR(i, a, b)                \
-    for (int i = (a); i < (b); i++) \
-        ;
+// Common typedefs
+typedef long long ll;
+typedef unsigned long long ull;
 
-#define RFOR(i, a, b)                \
-    for (int i = (a); i >= (b); i--) \
-        ;
+using namespace std;
 
-#define CINARR(arr) \
-    FOR(i, 0, arr.size()) { std::cin >> arr[i]; }
+const string AB = "ab";
+const string BA = "ba";
 
-#define COUTARR(arr) \
-    FOR(i, 0, arr.size()) { std::cout << arr[i] << " "; }
-
-#define read(...) \
-    __VA_ARGS__;  \
-    cin >> __VA_ARGS__;
-#define write(...) cout << __VA_ARGS__ << endl;
-
-#define all(x) (x).begin(), (x).end();
-
-#define MOD 1000000007;
-#define endl '\n';
-
-#define DEGUG(x) cout << '>' << #x << ':' << x << endl;
-
-using std namespace;
-
-class Solution
+int maximumGain(string s, int x, int y)
 {
 
-public:
-    int X;
-    int Y;
+    string higherSubStr = x > y ? AB : BA;
+    string lowerSubStr = higherSubStr == AB ? BA : AB;
+    int higherPoint = max(x, y);
+    int lowerPoint = min(x, y);
 
-    int cntPattern(string &s, int start, string &p)
+    int maxGain = 0;
+
+    stack<char> st;
+
+    for (char &c : s)
     {
-        for (int i = start; i < s.size() - 1; i++)
+        if (st.empty() || (string(1, st.top()) + string(1, c)) != higherSubStr)
         {
-            if (s[i] + s[i + 1] == p)
-                return i;
-        }
-        return -1;
-    }
-
-    int bruteForce(std::string &s, std::stack<char> stack, int start, std::string p)
-    {
-
-        int max_score = 0;
-
-        for (int = start; i < s.size() - 1; i++)
-        {
-            char top = stack.top();
-
-            if (top + s[i] == p && p == "ab")
-            {
-                stack.pop();
-                max_score = X + max(bruteForce9(s, stack, i + 1, "ab"), bruteForce(s, stack, i + 1, "ba"));
-            }
-            else
-            {
-                stack.push(s[i]);
-            }
+            st.push(c);
+            continue;
         }
 
-        return max_score;
+        maxGain += higherPoint;
+        st.pop();
     }
 
-    int maximumGain(string s, int x, int y)
+    string remainStr;
+
+    while (!st.empty())
     {
-        this.X = x;
-        this.Y = y;
-
-        std::stack<char> stack;
-
-        return max(bruteForce(s, stack, 0, "ab"), bruteForce(s, stack, 0, "ba"));
+        remainStr += st.top();
+        st.pop();
     }
 
+    std::reverse(remainStr.begin(), remainStr.end());
+
+    for (char &c : remainStr)
+    {
+        if (st.empty() || (string(1, st.top()) + string(1, c)) != lowerSubStr)
+        {
+            st.push(c);
+            continue;
+        }
+
+        maxGain += lowerPoint;
+        st.pop();
+    }
+
+    return maxGain;
 }
 
-int
-main()
+void solve()
 {
+    string s;
+    int x, y;
+    cin >> s >> x >> y;
+
+    cout << maximumGain(s, x, y) << endl;
+}
+int main()
+{
+    fast_io;
+
+    int T = 1;
+    while (T--)
+    {
+        solve();
+    }
     return 0;
 }
