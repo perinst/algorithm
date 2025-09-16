@@ -47,6 +47,20 @@ const double EPS = 1e-9;
 #define fi first
 #define se second
 
+#define FOR(i, a, b)                \
+    for (int i = (a); i < (b); i++) \
+        ;
+
+#define RFOR(i, a, b)                \
+    for (int i = (a); i >= (b); i--) \
+        ;
+
+#define CINARR(arr) \
+    FOR(i, 0, arr.size()) { std::cin >> arr[i]; }
+
+#define COUTARR(arr) \
+    FOR(i, 0, arr.size()) { std::cout << arr[i] << " "; }
+
 // Debug template
 template <typename T>
 ostream &operator<<(ostream &os, const vector<T> &v)
@@ -162,7 +176,7 @@ void solve()
 
 int main()
 {
-    fast_io;
+    // fast_io;
 
     int T = 1;
     // cin >> T;
